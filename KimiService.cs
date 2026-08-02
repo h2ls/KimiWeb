@@ -133,11 +133,38 @@ public sealed class KimiService
         Start();
     }
 
-    /// <summary>用默认浏览器打开 Kimi Web。</summary>
+    /// <summary>用默认浏览器打开 Kimi Web（携带 #token= 认证片段）。</summary>
     public void OpenInBrowser()
     {
-        Note($"打开 {CurrentUrl}");
-        Process.Start(new ProcessStartInfo(CurrentUrl) { UseShellExecute = true });
+        string url = CurrentUrl;
+        if (!url.Contains("#token=", StringComparison.Ordinal))
+        {
+            // 日志里没解析到带 token 的地址时，从持久化 token 文件补上
+            string? token = ReadServerToken();
+            if (!string.IsNullOrEmpty(token))
+                url = url.TrimEnd('/') + "/#token=" + token;
+        }
+        Note($"打开 {url}");
+        Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+    }
+
+    /// <summary>读取 kimi web 的持久化 bearer token（home 目录下的 server.token）。</summary>
+    private static string? ReadServerToken()
+    {
+        try
+        {
+            string? home = Environment.GetEnvironmentVariable("KIMI_CODE_HOME");
+            if (string.IsNullOrEmpty(home))
+                home = Path.GetDirectoryName(Path.GetDirectoryName(ExePath)); // bin\kimi.exe 的上一级
+            if (string.IsNullOrEmpty(home))
+                return null;
+            string path = Path.Combine(home, "server.token");
+            return File.Exists(path) ? File.ReadAllText(path).Trim() : null;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     /// <summary>向日志窗口追加一条应用自身的提示信息。</summary>
@@ -155,7 +182,13 @@ public sealed class KimiService
         // 从输出中解析服务地址（可能带 token），供“打开 Kimi Web”使用
         Match m = UrlRegex.Match(line);
         if (m.Success)
-            CurrentUrl = m.Value.TrimEnd('.', ',', ')', ';');
+        {
+            string url = m.Value.TrimEnd('.', ',', ')', ';');
+            // 优先保留带 token 的地址：后续日志行里的裸地址（如 server ready）不覆盖它
+            if (url.Contains("#token=", StringComparison.Ordinal) ||
+                !CurrentUrl.Contains("#token=", StringComparison.Ordinal))
+                CurrentUrl = url;
+        }
 
         LogReceived?.Invoke(line);
     }

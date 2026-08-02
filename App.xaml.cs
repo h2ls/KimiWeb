@@ -141,7 +141,8 @@ public partial class App : System.Windows.Application
             _stopItem.Enabled = running;
     }
 
-    private void ExitApp()
+    /// <summary>停止服务并退出整个应用程序（托盘菜单“退出”与主窗口“关闭服务”共用）。</summary>
+    public void ExitApp()
     {
         if (_mainWindow is not null)
             _mainWindow.AllowClose = true;

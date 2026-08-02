@@ -91,9 +91,20 @@ public partial class MainWindow : FluentWindow
 
     private async void Stop_Click(object sender, RoutedEventArgs e)
     {
+        var confirm = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = "确认退出",
+            Content = "将关闭 kimi web 服务并退出 Kimi Web，是否继续？",
+            PrimaryButtonText = "关闭并退出",
+            CloseButtonText = "取消",
+            Owner = this,
+        };
+
+        if (await confirm.ShowDialogAsync() != Wpf.Ui.Controls.MessageBoxResult.Primary)
+            return;
+
         StopButton.IsEnabled = false;
-        try { await Task.Run(() => _service.Stop()); }
-        finally { StopButton.IsEnabled = true; }
+        ((App)System.Windows.Application.Current).ExitApp();
     }
 
     private void AutoStart_Changed(object sender, RoutedEventArgs e)
