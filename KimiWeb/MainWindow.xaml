@@ -82,7 +82,7 @@
                 BorderThickness="0"
                 FontFamily="Cascadia Mono, Consolas"
                 FontSize="12"
-                Foreground="#FFD4D4D4"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                 HorizontalScrollBarVisibility="Auto"
                 IsReadOnly="True"
                 TextWrapping="NoWrap"

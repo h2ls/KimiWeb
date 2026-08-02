@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Win32;
+using Wpf.Ui.Appearance;
 using Forms = System.Windows.Forms;
 
 namespace KimiWeb;
@@ -25,6 +27,10 @@ public partial class App : System.Windows.Application
     {
         base.OnStartup(e);
 
+        // 跟随系统深浅主题，并在系统切换主题时同步更新
+        ApplySystemTheme();
+        SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
+
         // 单实例：托盘程序只允许一个
         _mutex = new Mutex(initiallyOwned: true, MutexName, out bool createdNew);
         if (!createdNew)
@@ -44,6 +50,22 @@ public partial class App : System.Windows.Application
         // 应用启动即拉起 kimi web 服务，窗口保持隐藏（双击托盘图标弹出）
         Service.Start();
         _trayIcon?.ShowBalloonTip(3000, "Kimi Web", "服务已在后台运行，双击图标打开主窗口", Forms.ToolTipIcon.Info);
+    }
+
+    /// <summary>按当前系统设置（浅色/深色）应用 WPF-UI 主题。</summary>
+    private static void ApplySystemTheme()
+    {
+        var theme = ApplicationThemeManager.GetSystemTheme() == SystemTheme.Dark
+            ? ApplicationTheme.Dark
+            : ApplicationTheme.Light;
+        ApplicationThemeManager.Apply(theme);
+    }
+
+    private void OnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+    {
+        // 系统切换深浅主题时触发 General 类别
+        if (e.Category == UserPreferenceCategory.General)
+            Dispatcher.BeginInvoke(ApplySystemTheme);
     }
 
     private void BuildTrayIcon()
@@ -157,6 +179,7 @@ public partial class App : System.Windows.Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        SystemEvents.UserPreferenceChanged -= OnUserPreferenceChanged;
         if (_trayIcon is not null)
         {
             _trayIcon.Visible = false;
