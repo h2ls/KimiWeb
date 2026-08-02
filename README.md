@@ -1,4 +1,4 @@
-# KimiWeb
+# <img src="KimiWeb/app.ico" alt="KimiWeb 图标" width="36" align="top"> KimiWeb
 
 Kimi Web 的 Windows 托盘控制台：一个基于 WPF 的桌面小程序，用于一键启动、管理和访问 [Kimi Code](https://www.kimi.com/) 的本地 Web 服务（`kimi.exe web`）。
 
