@@ -1,3 +1,3 @@
 <Solution>
-  <Project Path="KimiWeb.csproj" />
+  <Project Path="./KimiWeb/KimiWeb.csproj" />
 </Solution>
