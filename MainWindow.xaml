@@ -10,6 +10,12 @@
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen">
+    <ui:FluentWindow.Background>
+        <ImageBrush
+            ImageSource="pack://application:,,,/app.ico"
+            Opacity="0.7"
+            Stretch="UniformToFill" />
+    </ui:FluentWindow.Background>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
