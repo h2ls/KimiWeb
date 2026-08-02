@@ -2,12 +2,17 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Wpf.Ui.Controls;
 
 namespace KimiWeb;
 
-public partial class MainWindow : Window
+public partial class MainWindow : FluentWindow
 {
+    private static readonly SolidColorBrush RunningBrush = new(System.Windows.Media.Color.FromRgb(0x3F, 0xB9, 0x50));
+    private static readonly SolidColorBrush StoppedBrush = new(System.Windows.Media.Color.FromRgb(0xF8, 0x51, 0x49));
+
     private const int MaxLogChars = 300_000;
 
     private readonly KimiService _service;
@@ -59,7 +64,8 @@ public partial class MainWindow : Window
     private void UpdateStatus()
     {
         bool running = _service.IsRunning;
-        StatusText.Text = running ? "服务状态：运行中" : "服务状态：已停止";
+        StatusText.Text = running ? "服务运行中" : "服务已停止";
+        StatusDot.Fill = running ? RunningBrush : StoppedBrush;
         StopButton.IsEnabled = running;
         UrlText.Text = "地址：" + _service.CurrentUrl;
     }

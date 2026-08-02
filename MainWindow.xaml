@@ -1,77 +1,120 @@
-<Window
+<ui:FluentWindow
     x:Class="KimiWeb.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="Kimi Web 控制台"
     Width="920"
-    Height="600"
+    Height="640"
+    ExtendsContentIntoTitleBar="True"
+    WindowBackdropType="Mica"
+    WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!--  顶部按钮一排  -->
-        <StackPanel Margin="12,12,12,8" Orientation="Horizontal">
-            <Button
+        <!--  标题栏  -->
+        <ui:TitleBar Title="Kimi Web 控制台" />
+
+        <!--  顶部操作区  -->
+        <StackPanel
+            Grid.Row="1"
+            Margin="16,14,16,10"
+            Orientation="Horizontal">
+            <ui:Button
                 x:Name="OpenWebButton"
-                Padding="18,8"
+                Appearance="Primary"
                 Click="OpenWeb_Click"
-                Content="Kimi Web"
-                FontSize="22"
-                FontWeight="Bold" />
-            <Button
+                FontSize="15">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="Globe24" />
+                </ui:Button.Icon>
+                Kimi Web
+            </ui:Button>
+            <ui:Button
                 x:Name="RestartButton"
-                Margin="14,0,0,0"
-                Padding="18,8"
-                VerticalAlignment="Center"
+                Margin="10,0,0,0"
                 Click="Restart_Click"
-                Content="重启服务"
-                FontSize="22"
-                FontWeight="Bold" />
-            <Button
+                FontSize="15">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="ArrowClockwise24" />
+                </ui:Button.Icon>
+                重启服务
+            </ui:Button>
+            <ui:Button
                 x:Name="StopButton"
                 Margin="10,0,0,0"
-                Padding="18,8"
-                VerticalAlignment="Center"
                 Click="Stop_Click"
-                Content="关闭服务"
-                FontSize="22"
-                FontWeight="Bold" />
-            <CheckBox
+                FontSize="15">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="Power24" />
+                </ui:Button.Icon>
+                关闭服务
+            </ui:Button>
+            <ui:ToggleSwitch
                 x:Name="AutoStartBox"
                 Margin="24,0,0,0"
                 VerticalAlignment="Center"
                 Checked="AutoStart_Changed"
                 Content="开机自启动"
-                FontSize="14"
                 Unchecked="AutoStart_Changed" />
         </StackPanel>
 
         <!--  服务日志（kimi web 以 log-level info 运行的输出）  -->
-        <TextBox
-            x:Name="LogBox"
-            Grid.Row="1"
-            Margin="12,0,12,8"
-            AcceptsReturn="True"
-            Background="#FF1E1E1E"
-            FontFamily="Consolas"
-            FontSize="12"
-            Foreground="#FFD4D4D4"
-            HorizontalScrollBarVisibility="Auto"
-            IsReadOnly="True"
-            TextWrapping="NoWrap"
-            VerticalScrollBarVisibility="Auto" />
+        <Border
+            Grid.Row="2"
+            Margin="16,0,16,8"
+            Padding="10,6"
+            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+            <TextBox
+                x:Name="LogBox"
+                VerticalAlignment="Stretch"
+                AcceptsReturn="True"
+                Background="Transparent"
+                BorderThickness="0"
+                FontFamily="Cascadia Mono, Consolas"
+                FontSize="12"
+                Foreground="#FFD4D4D4"
+                HorizontalScrollBarVisibility="Auto"
+                IsReadOnly="True"
+                TextWrapping="NoWrap"
+                VerticalScrollBarVisibility="Auto" />
+        </Border>
 
-        <StatusBar Grid.Row="2">
-            <StatusBarItem>
-                <TextBlock x:Name="StatusText" Text="服务状态：已停止" />
-            </StatusBarItem>
-            <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock x:Name="UrlText" Text="" />
-            </StatusBarItem>
-        </StatusBar>
+        <!--  底部状态栏  -->
+        <Border
+            Grid.Row="3"
+            Padding="18,12"
+            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+            <Grid>
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <Ellipse
+                        x:Name="StatusDot"
+                        Width="10"
+                        Height="10"
+                        VerticalAlignment="Center"
+                        Fill="#FFF85149" />
+                    <TextBlock
+                        x:Name="StatusText"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="服务已停止" />
+                </StackPanel>
+                <TextBlock
+                    x:Name="UrlText"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+            </Grid>
+        </Border>
     </Grid>
-</Window>
+</ui:FluentWindow>
